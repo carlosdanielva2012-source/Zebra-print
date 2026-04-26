@@ -3,65 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Finanzas Daniel - v3.0</title>
+    <title>Dashboard Finanzas Daniel - v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
 </head>
 <body class="bg-[#F0F3F7] text-slate-800 min-h-screen pb-20">
 
     <div class="max-w-xl mx-auto p-4">
         <header class="flex flex-col gap-4 mb-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-xl font-bold text-blue-700 italic">Resumen de Cuentas</h1>
+                <h1 class="text-xl font-bold text-blue-700 italic">Control de Pagos</h1>
                 <input type="file" id="fileInput" class="hidden" accept=".json">
-                <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md">
+                <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md active:scale-95 transition-all">
                     🔄 Cargar Backup
                 </button>
             </div>
             
             <div class="flex bg-slate-200 p-1 rounded-xl shadow-inner">
-                <button onclick="setAcc('personal')" id="btnP" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-blue-700">Personal</button>
-                <button onclick="setAcc('corriente')" id="btnC" class="flex-1 py-2 rounded-lg text-slate-500 font-bold">Corriente</button>
+                <button onclick="setAcc('personal')" id="btnP" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-blue-700">Análisis Personal</button>
+                <button onclick="setAcc('corriente')" id="btnC" class="flex-1 py-2 rounded-lg text-slate-500 font-bold">Análisis Corriente</button>
             </div>
         </header>
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 mb-6">
-            <h2 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest text-center">Gastos del Mes (<span id="txtLabelAcc">Personal</span>)</h2>
-            <div class="relative h-44">
+            <h2 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest text-center">Consumo del Mes: <span id="txtLabelAcc">Personal</span></h2>
+            <div class="relative h-40">
                 <canvas id="chartGastos"></canvas>
             </div>
+            <div class="flex justify-between mt-4 pt-4 border-t border-slate-50">
+                <div class="text-center flex-1">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Gastos</p>
+                    <p id="txtConsumo" class="text-lg font-black text-red-500">$0.00</p>
+                </div>
+                <div class="text-center flex-1 border-l border-slate-100">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Ingresos</p>
+                    <p id="txtIngreso" class="text-lg font-black text-green-600">$0.00</p>
+                </div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Gasto Mes</p>
-                <p id="txtConsumo" class="text-xl font-black text-red-500">$0.00</p>
-            </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-right">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Ingresos Mes</p>
-                <p id="txtIngreso" class="text-xl font-black text-green-600">$0.00</p>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
             <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
                 <div>
-                    <h2 class="font-bold text-sm">Pendientes Globales</h2>
-                    <p class="text-[9px] opacity-70">Puedes elegir de ambas cuentas</p>
+                    <h2 class="font-bold text-sm">Cobros Pendientes</h2>
+                    <p class="text-[9px] opacity-70 italic">Personal (Solo Préstamos) + Corriente</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[10px] font-bold uppercase opacity-70">Seleccionado</p>
-                    <p id="txtSubtotal" class="text-xl font-black text-yellow-400">$0.00</p>
+                    <p class="text-[10px] font-bold uppercase opacity-60 leading-none">Total Seleccionado</p>
+                    <p id="txtSubtotal" class="text-2xl font-black text-yellow-400 tracking-tighter">$0.00</p>
                 </div>
             </div>
             
-            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
-                <li class="p-8 text-center text-slate-400 italic">Carga el JSON para gestionar tus deudas</li>
+            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[450px] overflow-y-auto">
+                <li class="p-8 text-center text-slate-400 italic text-sm">Carga tu JSON para filtrar cobros reales</li>
             </ul>
 
-            <div class="p-4 bg-slate-50 border-t border-slate-200">
+            <div class="p-4 bg-white border-t border-slate-100">
                 <button onclick="compartirWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all">
-                    <span>Compartir Selección</span>
+                    <span>Enviar a WhatsApp</span>
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.396.015 12.03c0 2.12.554 4.189 1.605 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.588h.005c6.631 0 12.026-5.396 12.029-12.03a11.79 11.79 0 00-3.517-8.503z"/></svg>
                 </button>
             </div>
@@ -71,7 +74,7 @@
     <script>
         let fullData = [];
         let curAcc = 'personal';
-        let seleccionados = []; // Aquí guardaremos los IDs seleccionados
+        let seleccionados = []; 
         let miChart = null;
 
         const incomeRules = ['quincena', 'ahorro', '💳_pago', '🤑_pago_prestamo'];
@@ -100,12 +103,11 @@
 
         function renderDashboard() {
             if (fullData.length === 0) return;
-
             const ahora = new Date();
             const mesActual = ahora.getMonth();
             const anioActual = ahora.getFullYear();
 
-            // --- Lógica de Gráfica y Métricas (Solo Cuenta Seleccionada) ---
+            // --- Análisis por Cuenta ---
             const dataMes = fullData.filter(r => {
                 const f = new Date(r.date);
                 return r.acc === curAcc && f.getUTCMonth() === mesActual && f.getUTCFullYear() === anioActual;
@@ -116,7 +118,7 @@
 
             dataMes.forEach(r => {
                 const isIncome = incomeRules.some(rule => r.cat.includes(rule)) && r.cat !== '💳_pago_tarjeta';
-                if (isIncome) { totalIngresos += Math.abs(r.amt); } 
+                if (isIncome) totalIngresos += Math.abs(r.amt);
                 else {
                     const monto = Math.abs(r.amt);
                     totalGastos += monto;
@@ -129,17 +131,100 @@
             document.getElementById('txtConsumo').innerText = `$${totalGastos.toFixed(2)}`;
             updateChart(categoriasGastos);
 
-            // --- Lógica de Checklist GLOBAL (Ambas Cuentas) ---
-            // Unificamos las categorías que representan deuda en ambas cuentas
-            const allTargetCats = ['🏦_prestamo', '🛒_dia_a_dia', '📉_pasivo', '🍕_recreacion', '📅_cuotas'];
-            
+            // --- Checklist UNIFICADO con Filtros Solicitados ---
             const pendientesGlobales = fullData.filter(r => {
-                return r.status === 'pending' && 
-                       r.amt < 0 && 
-                       allTargetCats.some(tc => r.cat.includes(tc));
+                if (r.status !== 'pending' || r.amt >= 0) return false;
+                
+                // Si es Personal: Solo Préstamos.
+                if (r.acc === 'personal') return r.cat === '🏦_prestamo';
+                
+                // Si es Corriente: Categorías de gasto normal y cuotas.
+                const catC = ['🛒_dia_a_dia', '📉_pasivo', '🍕_recreacion', '📅_cuotas'];
+                return catC.some(tc => r.cat.includes(tc));
             });
 
             renderChecklist(pendientesGlobales);
+        }
+
+        function renderChecklist(items) {
+            const list = document.getElementById('listaPendientes');
+            list.innerHTML = '';
+            items.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            items.forEach(r => {
+                const sel = seleccionados.find(s => s.id === r.id);
+                const isChecked = !!sel;
+                
+                // Cálculo inicial de saldo (una cuota si es cuotas)
+                let montoInicial = Math.abs(r.amt);
+                if(r.cat === '📅_cuotas') montoInicial = montoInicial / (r.total_cuotas || 1);
+                const saldoReal = montoInicial - (r.abonado || 0);
+
+                const li = document.createElement('li');
+                li.className = `flex flex-col p-4 transition ${isChecked ? 'bg-blue-50' : 'hover:bg-slate-50'}`;
+                
+                li.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <div class="flex items-center gap-3 cursor-pointer" onclick="toggleItem(${r.id}, ${saldoReal})">
+                            <div class="chk w-6 h-6 border-2 ${isChecked ? 'bg-blue-600 border-blue-600' : 'border-slate-300'} rounded-full flex items-center justify-center text-white text-xs">
+                                ${isChecked ? '✓' : ''}
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <p class="font-bold text-sm text-slate-700">${r.desc}</p>
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r.acc === 'personal' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}">
+                                        ${r.acc === 'personal' ? 'P' : 'C'}
+                                    </span>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase">${r.cat.replace('_',' ')} | ${r.date}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <div class="relative">
+                                <span class="absolute left-2 top-1.5 text-xs font-bold text-slate-400">$</span>
+                                <input type="number" 
+                                    value="${sel ? sel.saldoEditado : saldoReal.toFixed(2)}" 
+                                    onchange="updateMonto(${r.id}, this.value)"
+                                    class="w-20 pl-5 pr-2 py-1 bg-white border border-slate-200 rounded-lg text-right font-black text-slate-700 focus:outline-none focus:border-blue-500 shadow-sm transition-all"
+                                    step="0.01">
+                            </div>
+                            <p class="text-[8px] text-slate-300 mt-1">Sugerido: $${saldoReal.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+            actualizarSumaTotal();
+        }
+
+        function toggleItem(id, saldo) {
+            const idx = seleccionados.findIndex(s => s.id === id);
+            if (idx > -1) {
+                seleccionados.splice(idx, 1);
+            } else {
+                const item = fullData.find(r => r.id === id);
+                seleccionados.push({ 
+                    id: id, 
+                    desc: item.desc, 
+                    cat: item.cat, 
+                    saldoEditado: saldo.toFixed(2), 
+                    acc: item.acc 
+                });
+            }
+            renderDashboard();
+        }
+
+        function updateMonto(id, nuevoValor) {
+            const sel = seleccionados.find(s => s.id === id);
+            if (sel) {
+                sel.saldoEditado = parseFloat(nuevoValor).toFixed(2);
+                actualizarSumaTotal();
+            }
+        }
+
+        function actualizarSumaTotal() {
+            const total = seleccionados.reduce((acc, s) => acc + parseFloat(s.saldoEditado), 0);
+            document.getElementById('txtSubtotal').innerText = `$${total.toFixed(2)}`;
         }
 
         function updateChart(data) {
@@ -149,86 +234,24 @@
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(data),
-                    datasets: [{
-                        data: Object.values(data),
-                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'],
-                        borderWidth: 2
-                    }]
+                    datasets: [{ data: Object.values(data), backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'], borderWidth: 2 }]
                 },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
-        }
-
-        function renderChecklist(items) {
-            const list = document.getElementById('listaPendientes');
-            list.innerHTML = '';
-
-            items.sort((a,b) => new Date(b.date) - new Date(a.date));
-
-            items.forEach(r => {
-                const isSelected = seleccionados.some(s => s.id === r.id);
-                const li = document.createElement('li');
-                li.className = `flex items-center justify-between p-4 transition cursor-pointer ${isSelected ? 'bg-blue-50' : 'hover:bg-slate-50'}`;
-                
-                // Cálculo de saldo (espejo de tu app)
-                let montoDisplay = Math.abs(r.amt);
-                if(r.cat === '📅_cuotas') montoDisplay = montoDisplay / (r.total_cuotas || 1);
-                const saldo = montoDisplay - (r.abonado || 0);
-
-                li.onclick = () => toggleItem(li, r, saldo);
-                
-                li.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="chk w-5 h-5 border-2 ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-slate-300'} rounded-full flex items-center justify-center text-white text-[10px]">
-                            ${isSelected ? '✓' : ''}
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <p class="font-bold text-sm text-slate-700">${r.desc}</p>
-                                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r.acc === 'personal' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}">
-                                    ${r.acc === 'personal' ? 'P' : 'C'}
-                                </span>
-                            </div>
-                            <p class="text-[9px] text-slate-400 font-bold uppercase">${r.cat.replace('_',' ')} | ${r.date}</p>
-                        </div>
-                    </div>
-                    <span class="font-black text-slate-700 text-sm">$${saldo.toFixed(2)}</span>
-                `;
-                list.appendChild(li);
-            });
-        }
-
-        function toggleItem(el, item, saldo) {
-            const idx = seleccionados.findIndex(s => s.id === item.id);
-            if (idx > -1) {
-                seleccionados.splice(idx, 1);
-            } else {
-                seleccionados.push({ id: item.id, desc: item.desc, cat: item.cat, saldo: saldo, acc: item.acc });
-            }
-            renderChecklist(fullData.filter(r => r.status === 'pending' && r.amt < 0 && ['🏦_prestamo', '🛒_dia_a_dia', '📉_pasivo', '🍕_recreacion', '📅_cuotas'].some(tc => r.cat.includes(tc))));
-            
-            const total = seleccionados.reduce((acc, s) => acc + s.saldo, 0);
-            document.getElementById('txtSubtotal').innerText = `$${total.toFixed(2)}`;
         }
 
         function compartirWhatsApp() {
             if (seleccionados.length === 0) return alert("Selecciona pagos primero.");
-            
-            let msg = "📝 *PENDIENTES POR LIQUIDAR*\n";
-            msg += "━━━━━━━━━━━━━━━━━━\n\n";
-
+            let msg = "📝 *CUENTAS POR LIQUIDAR*\n━━━━━━━━━━━━━━━━━━\n\n";
             seleccionados.forEach(s => {
                 let emoji = s.cat.split('_')[0] || '💸';
                 const d = s.desc.toLowerCase();
                 for (let k in emojiMap) if (d.includes(k)) { emoji = emojiMap[k]; break; }
-                
-                const cuentaTag = s.acc === 'personal' ? "(P)" : "(C)";
-                msg += `${emoji} *${s.desc.trim()}* ${cuentaTag}: $${s.saldo.toFixed(2)}\n`;
+                const cuenta = s.acc === 'personal' ? "(P)" : "(C)";
+                msg += `${emoji} *${s.desc.trim()}* ${cuenta}: $${s.saldoEditado}\n`;
             });
-
-            const total = seleccionados.reduce((acc, s) => acc + s.saldo, 0);
+            const total = seleccionados.reduce((acc, s) => acc + parseFloat(s.saldoEditado), 0);
             msg += `\n━━━━━━━━━━━━━━━━━━\n💰 *TOTAL: $${total.toFixed(2)}*`;
-            
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
