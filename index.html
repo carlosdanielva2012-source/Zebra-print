@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Finanzas Daniel - v2.0</title>
+    <title>Dashboard Finanzas Daniel - v3.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -12,54 +12,57 @@
     <div class="max-w-xl mx-auto p-4">
         <header class="flex flex-col gap-4 mb-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-xl font-bold text-blue-700">Dashboard de Consumo</h1>
+                <h1 class="text-xl font-bold text-blue-700 italic">Resumen de Cuentas</h1>
                 <input type="file" id="fileInput" class="hidden" accept=".json">
-                <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md">
-                    Cargar Backup
+                <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md">
+                    🔄 Cargar Backup
                 </button>
             </div>
             
             <div class="flex bg-slate-200 p-1 rounded-xl shadow-inner">
-                <button onclick="setAcc('personal')" id="btnP" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-blue-700 transition-all">Personal</button>
-                <button onclick="setAcc('corriente')" id="btnC" class="flex-1 py-2 rounded-lg text-slate-500 font-bold transition-all">Corriente</button>
+                <button onclick="setAcc('personal')" id="btnP" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-blue-700">Personal</button>
+                <button onclick="setAcc('corriente')" id="btnC" class="flex-1 py-2 rounded-lg text-slate-500 font-bold">Corriente</button>
             </div>
         </header>
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 mb-6">
-            <h2 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Distribución de Gastos (Mes)</h2>
-            <div class="relative h-48">
+            <h2 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest text-center">Gastos del Mes (<span id="txtLabelAcc">Personal</span>)</h2>
+            <div class="relative h-44">
                 <canvas id="chartGastos"></canvas>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Consumo Real</p>
-                <p id="txtConsumo" class="text-2xl font-black text-red-500">$0.00</p>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Gasto Mes</p>
+                <p id="txtConsumo" class="text-xl font-black text-red-500">$0.00</p>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-right">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Ingresos/Abonos</p>
-                <p id="txtIngreso" class="text-2xl font-black text-green-600">$0.00</p>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-right">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Ingresos Mes</p>
+                <p id="txtIngreso" class="text-xl font-black text-green-600">$0.00</p>
             </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-            <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                <h2 class="font-bold text-slate-700">Pendientes por Liquidar</h2>
+            <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
+                <div>
+                    <h2 class="font-bold text-sm">Pendientes Globales</h2>
+                    <p class="text-[9px] opacity-70">Puedes elegir de ambas cuentas</p>
+                </div>
                 <div class="text-right">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">Subtotal Seleccionado</p>
-                    <p id="txtSubtotal" class="text-xl font-black text-blue-600">$0.00</p>
+                    <p class="text-[10px] font-bold uppercase opacity-70">Seleccionado</p>
+                    <p id="txtSubtotal" class="text-xl font-black text-yellow-400">$0.00</p>
                 </div>
             </div>
             
-            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[350px] overflow-y-auto">
-                <li class="p-8 text-center text-slate-400 italic">Carga el JSON para ver los pendientes de esta cuenta</li>
+            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
+                <li class="p-8 text-center text-slate-400 italic">Carga el JSON para gestionar tus deudas</li>
             </ul>
 
-            <div class="p-4 bg-slate-50">
-                <button onclick="compartirWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
-                    <span>Enviar Detalle a mi Pareja</span>
-                    <small>💬</small>
+            <div class="p-4 bg-slate-50 border-t border-slate-200">
+                <button onclick="compartirWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all">
+                    <span>Compartir Selección</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.396.015 12.03c0 2.12.554 4.189 1.605 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.588h.005c6.631 0 12.026-5.396 12.029-12.03a11.79 11.79 0 00-3.517-8.503z"/></svg>
                 </button>
             </div>
         </div>
@@ -68,10 +71,9 @@
     <script>
         let fullData = [];
         let curAcc = 'personal';
-        let seleccionados = [];
+        let seleccionados = []; // Aquí guardaremos los IDs seleccionados
         let miChart = null;
 
-        // Mismas reglas que tu App original
         const incomeRules = ['quincena', 'ahorro', '💳_pago', '🤑_pago_prestamo'];
         const emojiMap = {
             'anda': '💧', 'caess': '⚡', 'aes': '⚡', 'tigo': '🌐', 'claro': '📱',
@@ -92,8 +94,7 @@
             curAcc = acc;
             document.getElementById('btnP').className = acc === 'personal' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-blue-700' : 'flex-1 py-2 rounded-lg text-slate-500 font-bold';
             document.getElementById('btnC').className = acc === 'corriente' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-blue-700' : 'flex-1 py-2 rounded-lg text-slate-500 font-bold';
-            seleccionados = [];
-            document.getElementById('txtSubtotal').innerText = "$0.00";
+            document.getElementById('txtLabelAcc').innerText = acc === 'personal' ? 'Personal' : 'Corriente';
             renderDashboard();
         }
 
@@ -104,27 +105,21 @@
             const mesActual = ahora.getMonth();
             const anioActual = ahora.getFullYear();
 
-            // Filtrar por cuenta actual y mes actual
+            // --- Lógica de Gráfica y Métricas (Solo Cuenta Seleccionada) ---
             const dataMes = fullData.filter(r => {
                 const f = new Date(r.date);
-                // Usamos UTC para evitar desfases de zona horaria al leer el JSON
                 return r.acc === curAcc && f.getUTCMonth() === mesActual && f.getUTCFullYear() === anioActual;
             });
 
-            // Lógica de Ingresos vs Gastos según incomeRules
-            let totalIngresos = 0;
-            let totalGastos = 0;
+            let totalIngresos = 0, totalGastos = 0;
             const categoriasGastos = {};
 
             dataMes.forEach(r => {
                 const isIncome = incomeRules.some(rule => r.cat.includes(rule)) && r.cat !== '💳_pago_tarjeta';
-                
-                if (isIncome) {
-                    totalIngresos += Math.abs(r.amt);
-                } else {
+                if (isIncome) { totalIngresos += Math.abs(r.amt); } 
+                else {
                     const monto = Math.abs(r.amt);
                     totalGastos += monto;
-                    // Agrupar para la gráfica
                     const catNombre = r.cat.split('_')[1] || r.cat;
                     categoriasGastos[catNombre] = (categoriasGastos[catNombre] || 0) + monto;
                 }
@@ -132,43 +127,35 @@
 
             document.getElementById('txtIngreso').innerText = `$${totalIngresos.toFixed(2)}`;
             document.getElementById('txtConsumo').innerText = `$${totalGastos.toFixed(2)}`;
+            updateChart(categoriasGastos);
 
-            // Checklist: Solo registros PENDIENTES y que sean GASTOS de la cuenta actual
-            // Para Corriente: Pendientes de consumo/cuotas. Para Personal: Pendientes de préstamos.
-            const targetCats = curAcc === 'personal' ? ['🏦_prestamo'] : ['🛒_dia_a_dia', '📉_pasivo', '🍕_recreacion', '📅_cuotas'];
+            // --- Lógica de Checklist GLOBAL (Ambas Cuentas) ---
+            // Unificamos las categorías que representan deuda en ambas cuentas
+            const allTargetCats = ['🏦_prestamo', '🛒_dia_a_dia', '📉_pasivo', '🍕_recreacion', '📅_cuotas'];
             
-            const pendientes = fullData.filter(r => {
-                return r.acc === curAcc && 
-                       r.status === 'pending' && 
+            const pendientesGlobales = fullData.filter(r => {
+                return r.status === 'pending' && 
                        r.amt < 0 && 
-                       targetCats.some(tc => r.cat.includes(tc));
+                       allTargetCats.some(tc => r.cat.includes(tc));
             });
 
-            updateChart(categoriasGastos);
-            renderChecklist(pendientes);
+            renderChecklist(pendientesGlobales);
         }
 
         function updateChart(data) {
             const ctx = document.getElementById('chartGastos').getContext('2d');
             if (miChart) miChart.destroy();
-            
             miChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(data),
                     datasets: [{
                         data: Object.values(data),
-                        backgroundColor: ['#2563eb', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'],
+                        borderWidth: 2
                     }]
                 },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10, weight: 'bold' } } }
-                    }
-                }
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
         }
 
@@ -176,76 +163,71 @@
             const list = document.getElementById('listaPendientes');
             list.innerHTML = '';
 
-            if (items.length === 0) {
-                list.innerHTML = '<li class="p-10 text-center text-slate-400 italic text-sm">No hay pagos pendientes en esta cuenta.</li>';
-                return;
-            }
+            items.sort((a,b) => new Date(b.date) - new Date(a.date));
 
             items.forEach(r => {
+                const isSelected = seleccionados.some(s => s.id === r.id);
                 const li = document.createElement('li');
-                li.className = "flex items-center justify-between p-4 hover:bg-blue-50 transition cursor-pointer";
-                li.onclick = () => toggleItem(li, r);
+                li.className = `flex items-center justify-between p-4 transition cursor-pointer ${isSelected ? 'bg-blue-50' : 'hover:bg-slate-50'}`;
                 
-                // Calcular saldo pendiente si es cuota (como en tu app)
+                // Cálculo de saldo (espejo de tu app)
                 let montoDisplay = Math.abs(r.amt);
                 if(r.cat === '📅_cuotas') montoDisplay = montoDisplay / (r.total_cuotas || 1);
                 const saldo = montoDisplay - (r.abonado || 0);
 
+                li.onclick = () => toggleItem(li, r, saldo);
+                
                 li.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="chk w-6 h-6 border-2 border-slate-300 rounded-full flex items-center justify-center text-white text-xs font-bold transition-all"></div>
+                        <div class="chk w-5 h-5 border-2 ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-slate-300'} rounded-full flex items-center justify-center text-white text-[10px]">
+                            ${isSelected ? '✓' : ''}
+                        </div>
                         <div>
-                            <p class="font-bold text-sm text-slate-700">${r.desc}</p>
+                            <div class="flex items-center gap-2">
+                                <p class="font-bold text-sm text-slate-700">${r.desc}</p>
+                                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r.acc === 'personal' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}">
+                                    ${r.acc === 'personal' ? 'P' : 'C'}
+                                </span>
+                            </div>
                             <p class="text-[9px] text-slate-400 font-bold uppercase">${r.cat.replace('_',' ')} | ${r.date}</p>
                         </div>
                     </div>
-                    <span class="font-black text-slate-700">$${saldo.toFixed(2)}</span>
+                    <span class="font-black text-slate-700 text-sm">$${saldo.toFixed(2)}</span>
                 `;
                 list.appendChild(li);
             });
         }
 
-        function toggleItem(el, item) {
-            const chk = el.querySelector('.chk');
+        function toggleItem(el, item, saldo) {
             const idx = seleccionados.findIndex(s => s.id === item.id);
-            
-            // Calculamos saldo igual que en el render
-            let montoItem = Math.abs(item.amt);
-            if(item.cat === '📅_cuotas') montoItem = montoItem / (item.total_cuotas || 1);
-            const saldo = montoItem - (item.abonado || 0);
-
             if (idx > -1) {
                 seleccionados.splice(idx, 1);
-                chk.className = "chk w-6 h-6 border-2 border-slate-300 rounded-full flex items-center justify-center text-white text-xs font-bold";
-                chk.innerHTML = "";
-                el.classList.remove('bg-blue-50');
             } else {
-                seleccionados.push({ ...item, saldoEfectivo: saldo });
-                chk.className = "chk w-6 h-6 border-blue-600 bg-blue-600 border-2 rounded-full flex items-center justify-center text-white text-xs font-bold";
-                chk.innerHTML = "✓";
-                el.classList.add('bg-blue-50');
+                seleccionados.push({ id: item.id, desc: item.desc, cat: item.cat, saldo: saldo, acc: item.acc });
             }
-
-            const total = seleccionados.reduce((acc, s) => acc + s.saldoEfectivo, 0);
+            renderChecklist(fullData.filter(r => r.status === 'pending' && r.amt < 0 && ['🏦_prestamo', '🛒_dia_a_dia', '📉_pasivo', '🍕_recreacion', '📅_cuotas'].some(tc => r.cat.includes(tc))));
+            
+            const total = seleccionados.reduce((acc, s) => acc + s.saldo, 0);
             document.getElementById('txtSubtotal').innerText = `$${total.toFixed(2)}`;
         }
 
         function compartirWhatsApp() {
-            if (seleccionados.length === 0) return alert("Selecciona los pagos que quieres compartir.");
+            if (seleccionados.length === 0) return alert("Selecciona pagos primero.");
             
-            let msg = "📝 *PAGOS PENDIENTES DE LIQUIDAR*\n";
-            msg += `🏦 Cuenta: *${curAcc.toUpperCase()}*\n`;
+            let msg = "📝 *PENDIENTES POR LIQUIDAR*\n";
             msg += "━━━━━━━━━━━━━━━━━━\n\n";
 
             seleccionados.forEach(s => {
                 let emoji = s.cat.split('_')[0] || '💸';
                 const d = s.desc.toLowerCase();
                 for (let k in emojiMap) if (d.includes(k)) { emoji = emojiMap[k]; break; }
-                msg += `${emoji} *${s.desc.trim()}*: $${s.saldoEfectivo.toFixed(2)}\n`;
+                
+                const cuentaTag = s.acc === 'personal' ? "(P)" : "(C)";
+                msg += `${emoji} *${s.desc.trim()}* ${cuentaTag}: $${s.saldo.toFixed(2)}\n`;
             });
 
-            const total = seleccionados.reduce((acc, s) => acc + s.saldoEfectivo, 0);
-            msg += `\n━━━━━━━━━━━━━━━━━━\n💰 *TOTAL A COMPARTIR: $${total.toFixed(2)}*`;
+            const total = seleccionados.reduce((acc, s) => acc + s.saldo, 0);
+            msg += `\n━━━━━━━━━━━━━━━━━━\n💰 *TOTAL: $${total.toFixed(2)}*`;
             
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
