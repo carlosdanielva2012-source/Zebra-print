@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard - Personal</title>
+    <title>Finance Dashboard Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -11,43 +11,53 @@
 
     <div class="max-w-xl mx-auto p-4">
         <header class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Mis Finanzas 📊</h1>
+            <h1 class="text-2xl font-bold italic text-blue-800">Mi Dashboard Finanzas</h1>
             <input type="file" id="fileInput" class="hidden" accept=".json">
-            <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                Cargar JSON
+            <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md active:scale-95 transition-all">
+                Cargar Datos
             </button>
         </header>
 
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 mb-6">
+            <h2 class="text-xs font-bold text-slate-400 uppercase mb-4">Distribución de Gastos</h2>
+            <div class="relative h-48">
+                <canvas id="chartGastos"></canvas>
+            </div>
+        </div>
+
         <div class="flex bg-slate-200 p-1 rounded-xl mb-6 shadow-inner">
-            <button onclick="cambiarVista('mes')" id="btnMes" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-slate-700 transition-all">Este Mes</button>
-            <button onclick="cambiarVista('total')" id="btnTotal" class="flex-1 py-2 rounded-lg text-slate-500 font-bold transition-all">Acumulado</button>
+            <button onclick="cambiarVista('mes')" id="btnMes" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-slate-700">Este Mes</button>
+            <button onclick="cambiarVista('total')" id="btnTotal" class="flex-1 py-2 rounded-lg text-slate-500 font-bold">Histórico</button>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-8">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Consumo</p>
-                <p id="txtConsumo" class="text-2xl font-black text-blue-600">$0.00</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Consumo Real (Egresos)</p>
+                <p id="txtConsumo" class="text-2xl font-black text-red-500">$0.00</p>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-right">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">A Compartir</p>
-                <p id="txtSubtotal" class="text-2xl font-black text-green-600">$0.00</p>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ingresos Totales</p>
+                <p id="txtIngreso" class="text-2xl font-black text-green-600">$0.00</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
             <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                <h2 class="font-bold">Pendientes de Pago</h2>
-                <span id="badgeCount" class="bg-orange-100 text-orange-600 text-xs font-bold px-2.5 py-0.5 rounded-full">0</span>
+                <h2 class="font-bold text-slate-700">Pagos Pendientes ⏳</h2>
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-400 font-bold">SUBTOTAL SELECCIONADO</p>
+                    <p id="txtSubtotal" class="text-xl font-black text-blue-600">$0.00</p>
+                </div>
             </div>
             
-            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
-                <li class="p-8 text-center text-slate-400 italic">Carga tu JSON para ver los pagos pendientes</li>
+            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[350px] overflow-y-auto">
+                <li class="p-8 text-center text-slate-400 italic">Carga el JSON para filtrar tus deudas reales</li>
             </ul>
 
-            <div class="p-4 bg-white border-t border-slate-100">
-                <button onclick="compartirWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95">
-                    <span>Compartir Detalle con Emojis</span>
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.396.015 12.03c0 2.12.554 4.189 1.605 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.588h.005c6.631 0 12.026-5.396 12.029-12.03a11.79 11.79 0 00-3.517-8.503z"/></svg>
+            <div class="p-4 bg-slate-50">
+                <button onclick="compartirWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all">
+                    <span>Compartir con mi Pareja</span>
+                    <small>(Solo seleccionados)</small>
                 </button>
             </div>
         </div>
@@ -57,12 +67,13 @@
         let fullData = [];
         let vistaActual = 'mes';
         let seleccionados = [];
+        let miChart = null;
 
         const emojiMap = {
             'anda': '💧', 'caess': '⚡', 'aes': '⚡', 'tigo': '🌐', 'claro': '📱',
-            'pupusas': '🫓', 'frances': '🥖', 'pan': '🥖', 'pollo': '🍗', 'campero': '🍗', 'kfc': '🍗',
-            'pizza': '🍕', 'sorbete': '🍦', 'mc': '🍦', 'utec': '🎓', 'gato': '🐱',
-            'moto': '🏍️', 'gasolina': '⛽', 'camisa': '👕', 'ruth': '👤', 'karla': '👤', 'beatriz': '👤'
+            'pupusas': '🫓', 'frances': '🥖', 'pan': '🥖', 'pollo': '🍗', 'campero': '🍗',
+            'pizza': '🍕', 'sorbete': '🍦', 'utec': '🎓', 'gato': '🐱', 'moto': '🏍️',
+            'gasolina': '⛽', 'camisa': '👕', 'ruth': '👤', 'karla': '👤'
         };
 
         document.getElementById('fileInput').addEventListener('change', function(e) {
@@ -87,37 +98,74 @@
             const ahora = new Date();
             let filtrados = fullData;
 
+            // 1. Filtro Temporal
             if (vistaActual === 'mes') {
                 filtrados = fullData.filter(i => {
                     const d = new Date(i.date);
-                    return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
+                    return d.getUTCMonth() === ahora.getMonth() && d.getUTCFullYear() === ahora.getFullYear();
                 });
             }
 
-            const consumoTotal = filtrados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
-            document.getElementById('txtConsumo').innerText = `$${consumoTotal.toFixed(2)}`;
+            // 2. Separación de Ingresos vs Gastos
+            const ingresos = filtrados.filter(i => i.amt > 0).reduce((acc, i) => acc + i.amt, 0);
+            const gastos = filtrados.filter(i => i.amt < 0).reduce((acc, i) => acc + Math.abs(i.amt), 0);
 
-            const pendientes = fullData.filter(i => i.status === 'pending');
-            document.getElementById('badgeCount').innerText = pendientes.length;
-            renderLista(pendientes);
+            document.getElementById('txtIngreso').innerText = `$${ingresos.toFixed(2)}`;
+            document.getElementById('txtConsumo').innerText = `$${gastos.toFixed(2)}`;
+
+            // 3. Checklist: SOLO PENDIENTES (ignora los pagados)
+            const pendientesReales = fullData.filter(i => i.status === 'pending' && i.amt < 0);
+            renderLista(pendientesReales);
+
+            // 4. Gráfica de Pastel (Gastos por categoría)
+            generarGrafica(filtrados.filter(i => i.amt < 0));
+        }
+
+        function generarGrafica(datosGastos) {
+            const resumenCat = {};
+            datosGastos.forEach(i => {
+                const nombreCat = i.cat.split('_')[1] || i.cat;
+                resumenCat[nombreCat] = (resumenCat[nombreCat] || 0) + Math.abs(i.amt);
+            });
+
+            const ctx = document.getElementById('chartGastos').getContext('2d');
+            if (miChart) miChart.destroy();
+
+            miChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(resumenCat),
+                    datasets: [{
+                        data: Object.values(resumenCat),
+                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
+                    }]
+                },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            });
         }
 
         function renderLista(items) {
             const container = document.getElementById('listaPendientes');
             container.innerHTML = '';
+            
+            if (items.length === 0) {
+                container.innerHTML = '<li class="p-8 text-center text-slate-400 italic text-sm">¡Felicidades! No tienes deudas pendientes.</li>';
+                return;
+            }
+
             items.forEach(item => {
                 const li = document.createElement('li');
                 li.className = "flex items-center justify-between p-4 hover:bg-slate-50 transition cursor-pointer";
                 li.onclick = () => toggleCheck(li, item);
                 li.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="check-circle w-6 h-6 border-2 border-slate-300 rounded-full flex items-center justify-center"></div>
+                        <div class="check-circle w-6 h-6 border-2 border-slate-300 rounded-full flex items-center justify-center transition-all"></div>
                         <div>
                             <p class="font-bold text-sm text-slate-700">${item.desc}</p>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold">${item.cat} • ${item.date}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">${item.cat} | ${item.date}</p>
                         </div>
                     </div>
-                    <span class="font-black text-slate-600">$${Math.abs(item.amt).toFixed(2)}</span>
+                    <span class="font-black text-slate-700">$${Math.abs(item.amt).toFixed(2)}</span>
                 `;
                 container.appendChild(li);
             });
@@ -130,41 +178,30 @@
             if (index > -1) {
                 seleccionados.splice(index, 1);
                 circle.innerHTML = '';
-                circle.classList.remove('bg-green-500', 'border-green-500');
-                el.classList.remove('bg-green-50');
+                circle.className = "check-circle w-6 h-6 border-2 border-slate-300 rounded-full flex items-center justify-center";
+                el.classList.remove('bg-blue-50');
             } else {
                 seleccionados.push(item);
                 circle.innerHTML = '✓';
-                circle.classList.add('bg-green-500', 'border-green-500', 'text-white');
-                el.classList.add('bg-green-50');
+                circle.className = "check-circle w-6 h-6 border-blue-600 bg-blue-600 text-white rounded-full flex items-center justify-center";
+                el.classList.add('bg-blue-50');
             }
             
-            const subtotal = seleccionados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
-            document.getElementById('txtSubtotal').innerText = `$${subtotal.toFixed(2)}`;
+            const total = seleccionados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
+            document.getElementById('txtSubtotal').innerText = `$${total.toFixed(2)}`;
         }
 
         function compartirWhatsApp() {
             if (seleccionados.length === 0) return alert("Selecciona pagos primero");
-            
-            let mensaje = "✨ *Resumen de Gastos Compartidos* ✨\n━━━━━━━━━━━━━━━━━━\n\n";
-            
+            let mensaje = "📑 *DETALLE DE GASTOS PENDIENTES*\n━━━━━━━━━━━━━━━━━━\n\n";
             seleccionados.forEach(item => {
-                let emoji = item.cat.split('_')[0] || '💸'; // Usa el emoji de la categoría si existe
+                let emoji = item.cat.split('_')[0] || '💸';
                 const desc = item.desc.toLowerCase();
-                
-                for (let key in emojiMap) {
-                    if (desc.includes(key)) { emoji = emojiMap[key]; break; }
-                }
-                
-                // Si la descripción tiene nombres de personas conocidos
-                if (desc.includes('ruth') || desc.includes('karla')) emoji = '👤';
-
+                for (let k in emojiMap) if (desc.includes(k)) { emoji = emojiMap[k]; break; }
                 mensaje += `${emoji} *${item.desc.trim()}*: $${Math.abs(item.amt).toFixed(2)}\n`;
             });
-
             const total = seleccionados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
-            mensaje += `\n━━━━━━━━━━━━━━━━━━\n💰 *SUBTOTAL: $${total.toFixed(2)}*\n\n💬 _¿Confirmamos estos pagos?_`;
-            
+            mensaje += `\n━━━━━━━━━━━━━━━━━━\n💰 *TOTAL A PAGAR: $${total.toFixed(2)}*`;
             window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
     </script>
