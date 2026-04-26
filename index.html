@@ -2,762 +2,171 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="favicon.png"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DANIEL INVENTO - Pro</title>
-    <meta name="theme-color" content="#0f172a">
-    <style>
-        /* BASE & MODERN RESET */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background-color: #f1f5f9;
-            color: #1e293b;
-            line-height: 1.5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* LAYOUT RESPONSIVO */
-        #app {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            background: white;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-        }
-
-        @media (min-width: 1024px) {
-            #app {
-                flex-direction: row;
-                height: 90vh;
-                margin: auto;
-                border-radius: 20px;
-                overflow: hidden;
-            }
-            
-            header {width: 350px; border-right: 1px solid #e2e8f0; height: 100%; }
-            main { flex: 1; display: flex; flex-direction: column; }
-            footer { position: absolute; bottom: 0; width: 330px; }
-            .sidebar { display: flex; flex-direction: column; height: 100%; position: relative; }
-        }
-
-        /* HEADER & SIDEBAR */
-        header { 
-            background-color: #0f172a; 
-            color: white; 
-            padding: 10px;
-        }
-
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
-        
-        /* FORMULARIO */
-        main { flex: 1; overflow-y: auto; padding: 10px; }
-        
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-        }
-
-        @media (min-width: 600px) {
-            .grid-layout { grid-template-columns: 1fr 1fr; }
-        }
-
-        /* COMPONENTES UI */
-        .input-group { margin-bottom: 16px; }
-        label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom:2px; display: block; }
-        
-        input[type="text"], input[type="number"], select {
-            width: 100%; 
-            padding: 5px; 
-            background-color: #f8fafc; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 10px; 
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        input:focus { border-color: #f59e0b; outline: none; background: white; }
-        input[readonly] { background-color: #f1f5f9; color: #94a3b8; }
-
-        /* PREVIEW AREA */
-        .preview-section {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 2px dashed #e2e8f0;
-        }
-
-        #label-container { 
-            background: white; 
-            border: 1px solid #000; 
-            padding: 15px; 
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            width: 100%;
-            max-width: 400px;
-            transition: aspect-ratio 0.3s;
-        }
-
-        /* BOTONES */
-        .btn-print { 
-            width: 100%; 
-            background-color: #f59e0b; 
-            color: #0f172a; 
-            padding: 2%; 
-            border-radius: 12px; 
-            font-weight: 800; 
-            border: none; 
-            cursor: pointer;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px;
-            font-size: 16px;
-            transition: transform 0.1s, background 0.2s;
-        }
-        .btn-print:hover { background-color: #fbbf24; }
-        .btn-print:active { transform: scale(0.80); }
-
-        /* NAVEGACIÓN TABS */
-        nav { display: flex; gap: 8px; margin-bottom: 5px; background: #f1f5f9; padding: 1%px; border-radius: 12px; }
-        nav button { 
-            flex: 1; padding: 3%; border-radius: 8px; border: none; font-weight: 700; font-size: 12px;
-            cursor: pointer; color: #64748b; background: transparent; transition: all 0.2s;
-        }
-        nav button.active { background: white; color: #0f172a; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-
-        /* TABLAS & ZPL */
-        .table-container { max-height: 400px; overflow: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f8fafc; padding: 12px; text-align: left; position: sticky; top: 0; }
-        td { padding: 12px; border-top: 1px solid #f1f5f9; }
-        
-        #zpl-output { 
-            background: #1e293b; color: #fbbf24; padding: 20px; border-radius: 12px; 
-            font-family: 'Fira Code', monospace; font-size: 12px; overflow: auto; height: 300px;
-        }
-
-        /* ASPECT RATIOS */
-        .ratio-90-60 { aspect-ratio: 90 / 60; }
-        .ratio-105-85 { aspect-ratio: 105 / 85; }
-        .ratio-105-25 { aspect-ratio: 105 / 25; }
-        .ratio-101-13 { aspect-ratio: 101 / 13; }
-
-        .barcode-sim { width: 100%; height: 40px; background: repeating-linear-gradient(90deg, #000, #000 2px, transparent 2px, transparent 5px); }
-        .hidden { display: none !important; }
-        
-        .badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 800; }
-        .badge-green { background: #22c55e; color: white; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard - Personal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    <div id="app">
-        <header class="sidebar">
-            <div class="header-top">
-                <div>
-                    <h1 style="font-size: 18px; font-weight: 900; letter-spacing: -0.025em;">DANIEL PRINT - PRO</h1>
-                    <select id="label-size" onchange="updatePreview()" style="background:transparent; color:#f59e0b; border:none; padding:0; font-size:12px; width: auto;">
-                        <option value="90x60">Banner PEQUE • 90x60mm</option>
-                        <option value="105x85">Banner GRANDE• 105x85mm</option>
-                        <option value="105x25">Normal 2x1 • 105x25mm</option>
-                        <option value="101x13">3 Columnas • 101x13mm</option>
-                    </select>
-                </div>
-                <div id="status-badge" class="badge" style="background: #334155;">OFFLINE</div>
-            </div>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-20">
 
-            <div class="input-group" style="margin-top: 10px;">
-                <label style="color: #94a3b8;">IP IMPRESORA</label>
-                <input id="printer-ip" type="text" value="192.168.1.50" style="background: #1e293b; border-color: #334155; color: #fbbf24;">
-                <label style="color: #94a3b8;">MÉTODO DE CONEXIÓN</label>
-    <select id="conn-method" style="background: #1e293b; color: #f59e0b; border-radius: 8px; padding: 5px;">
-        <option value="ip">RED (IP)</option>
-        <option value="usb">USB (Browser Print)</option>
-        <option value="serial">USB DIRECTO (Serial)</option>
-    </select>
-            </div>
-
-            <nav>
-                <button onclick="setTab('design')" id="tab-design" class="active">DISEÑO</button>
-                <button onclick="setTab('zpl')" id="tab-zpl">ZPL</button>
-                <button onclick="setTab('db')" id="tab-db">BASE DATOS</button>
-            </nav>
-
-            <div style="flex: 1" class="hidden-mobile">
-                <div id="db-status" style="font-size: 11px; color: #94a3b8; font-weight: 600;">SIN BASE DE DATOS</div>
-            </div>
-
-            <footer style="padding: 5px 0;">
-                <button onclick="printZebra()" id="print-btn" class="btn-print">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 18H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/><polyline points="6 9 6 2 18 2 18 9"/></svg>
-                    IMPRIMIR AHORA
-                </button>
-                <div id="message" class="hidden" style="text-align: center; font-size: 11px; margin-top: 10px; font-weight: 800;"></div>
-            </footer>
+    <div class="max-w-xl mx-auto p-4">
+        <header class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Mis Finanzas 📊</h1>
+            <input type="file" id="fileInput" class="hidden" accept=".json">
+            <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                Cargar JSON
+            </button>
         </header>
 
-        <main>
-            <div id="view-design">
-                <div class="grid-layout">
-                    <section>
-                        <div class="input-group">
-                            <label>Código / SKU</label>
-                            <input id="prod-sku" oninput="handleSkuSearch()" type="text" value="108692" placeholder="Ingrese SKU...">
-                        </div>
+        <div class="flex bg-slate-200 p-1 rounded-xl mb-6 shadow-inner">
+            <button onclick="cambiarVista('mes')" id="btnMes" class="flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-slate-700 transition-all">Este Mes</button>
+            <button onclick="cambiarVista('total')" id="btnTotal" class="flex-1 py-2 rounded-lg text-slate-500 font-bold transition-all">Acumulado</button>
+        </div>
 
-                        <div class="input-group">
-                            <label>Nombre del Producto</label>
-                            <input id="prod-name" type="text" value="CINTA AISLANTE" readonly>
-                        </div>
-
-                        <div id="extra-fields" class="grid-layout" style="grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div class="input-group">
-                                <label>U.M.</label>
-                                <input id="prod-um" type="text" value="RLL" readonly style="text-align: center;">
-                            </div>
-                            <div class="input-group">
-                                <label>Cantidad</label>
-                                <input id="prod-qty" oninput="updatePreview()" type="number" value="100" style="text-align: center; border-color: #f59e0b;">
-                            </div>
-                        </div>
-
-                        <div style="display: flex; align-items: center; gap: 10px; padding: 15px; background: #fff7ed; border-radius: 12px; margin-bottom: 20px;">
-                            <input type="checkbox" id="use-escape" onchange="updatePreview()" style="width: 20px; height: 20px; accent-color: #f59e0b;" checked>
-                            <label for="use-escape" style="margin:0; text-transform: none; color: #9a3412;">Incluir cantidad en código de barras</label>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Copias a imprimir</label>
-                            <input id="prod-copies" type="number" value="1" min="1">
-                        </div>
-                    </section>
-
-<section class="preview-section">
-    <label style="align-self: flex-start;">Previsualización Dinámica</label>
-    <div id="label-container" class="ratio-90-60" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-        <h3 id="prev-name" style="font-size: 2.2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; line-height: 1;">PRODUCTO</h3>
-        
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
-            <div style="display: flex; align-items: baseline; gap: 10px;">
-                <span style="font-size: 18px; font-weight: 900;">Cantidad:</span>
-                <span id="prev-qty" style="font-size: 55px; font-weight: 900; line-height: 1;">100</span>
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Consumo</p>
+                <p id="txtConsumo" class="text-2xl font-black text-blue-600">$0.00</p>
             </div>
-            <div style="text-align: right;">
-                <div style="font-size: 12px; font-weight: 900; line-height: 1;">UNIDAD DE MEDIDA:</div>
-                <div id="prev-um" style="font-size: 35px; font-weight: 900; line-height: 1;">RLL</div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-right">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">A Compartir</p>
+                <p id="txtSubtotal" class="text-2xl font-black text-green-600">$0.00</p>
             </div>
         </div>
 
-        <div style="display: flex; align-items: flex-end; gap: 20px;">
-            <div style="flex: 1;">
-                <div class="barcode-sim" style="height: 60px;"></div>
-                <div id="prev-barcode-text" style="display:none;">108692</div> </div>
-            <div style="text-align: right; min-width: 120px;">
-                <div style="font-size: 14px; font-weight: 900; line-height: 1;">SKU:</div>
-                <div id="prev-sku-display" style="font-size: 45px; font-weight: 900; line-height: 1;">108692</div>
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+            <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h2 class="font-bold">Pendientes de Pago</h2>
+                <span id="badgeCount" class="bg-orange-100 text-orange-600 text-xs font-bold px-2.5 py-0.5 rounded-full">0</span>
+            </div>
+            
+            <ul id="listaPendientes" class="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
+                <li class="p-8 text-center text-slate-400 italic">Carga tu JSON para ver los pagos pendientes</li>
+            </ul>
+
+            <div class="p-4 bg-white border-t border-slate-100">
+                <button onclick="compartirWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95">
+                    <span>Compartir Detalle con Emojis</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.396.015 12.03c0 2.12.554 4.189 1.605 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.588h.005c6.631 0 12.026-5.396 12.029-12.03a11.79 11.79 0 00-3.517-8.503z"/></svg>
+                </button>
             </div>
         </div>
-    </div>
-</section>
-                </div>
-            </div>
-
-            <div id="view-zpl" class="hidden">
-                <div id="zpl-output"></div>
-                <button onclick="exportZPL()" style="margin-top: 15px; padding: 12px 20px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; font-weight: bold;">Descargar archivo .ZPL</button>
-            </div>
-
-            <div id="view-db" class="hidden">
-                <div style="background: #f8fafc; border: 2px dashed #cbd5e1; padding: 40px; border-radius: 16px; text-align: center; margin-bottom: 24px;">
-                    <h3 style="margin-bottom: 10px;">Importar Catálogo</h3>
-                    <p style="font-size: 12px; color: #64748b; margin-bottom: 20px;">Suba un archivo CSV (sku;Articulo;UMedida)</p>
-                    <input type="file" id="csv-file" accept=".csv" class="hidden" onchange="importCSV(this)">
-                    <button onclick="document.getElementById('csv-file').click()" style="background: #0f172a; color: white; padding: 12px 30px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;">Seleccionar Archivo</button>
-                    <button onclick="clearDatabase()" style="color: #ef4444; background: none; border: none; margin-left: 15px; cursor: pointer; font-weight: bold;">Limpiar</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>SKU</th><th>Artículo</th><th>UM</th></tr>
-                        </thead>
-                        <tbody id="db-preview-body">
-                            <tr><td colspan="3" style="text-align: center; padding: 40px; color: #94a3b8;">No hay datos cargados</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
     </div>
 
     <script>
+        let fullData = [];
+        let vistaActual = 'mes';
+        let seleccionados = [];
 
-let db;
-
-async function initDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open("ZebraProDB", 1);
-        
-        request.onupgradeneeded = (e) => {
-            const dbSetup = e.target.result;
-            if (!dbSetup.objectStoreNames.contains("productos")) {
-                dbSetup.createObjectStore("productos", { keyPath: "sku" });
-            }
+        const emojiMap = {
+            'anda': '💧', 'caess': '⚡', 'aes': '⚡', 'tigo': '🌐', 'claro': '📱',
+            'pupusas': '🫓', 'frances': '🥖', 'pan': '🥖', 'pollo': '🍗', 'campero': '🍗', 'kfc': '🍗',
+            'pizza': '🍕', 'sorbete': '🍦', 'mc': '🍦', 'utec': '🎓', 'gato': '🐱',
+            'moto': '🏍️', 'gasolina': '⛽', 'camisa': '👕', 'ruth': '👤', 'karla': '👤', 'beatriz': '👤'
         };
 
-        request.onsuccess = (e) => {
-            db = e.target.result;
-            resolve(db);
-        };
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                fullData = JSON.parse(event.target.result);
+                actualizarDashboard();
+            };
+            reader.readAsText(e.target.files[0]);
+        });
 
-        request.onerror = (e) => reject("Error abriendo IndexedDB");
-    });
-}
-
-//////// SECUESTRO DE CTRL + P
-
-// Listener de alta prioridad para interceptar Ctrl+P
-window.addEventListener('keydown', function (e) {
-    // Verificamos si es la tecla P (case insensitive) + Ctrl o Cmd (Mac)
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
-        
-        // PRIMERO: Detenemos el comportamiento del navegador inmediatamente
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        const btn = document.getElementById('print-btn');
-    
-        // Efecto visual de "clic"
-         btn.style.transform = "scale(0.95)";
-        setTimeout(() => { btn.style.transform = "scale(1)"; }, 100);
-
-        console.log("Intercepción de Ctrl+P exitosa.");
-
-        // SEGUNDO: Ejecutamos tu función de Zebra
-        printZebra();
-        
-        return false; // Refuerzo para navegadores antiguos
-    }
-}, true); // El parámetro 'true' activa la fase de captura (prioridad máxima)
-
-/////////////////
-
-
-// NUEVO window.onload corregido
-window.onload = async function() {
-    // Cargar IP desde localStorage (esto sí funciona para datos pequeños)
-    const savedIp = localStorage.getItem('zebra_ip');
-    if (savedIp) document.getElementById('printer-ip').value = savedIp;
-
-    try {
-        await initDB(); // Esperar a que la DB abra
-        const tx = db.transaction("productos", "readonly");
-        const store = tx.objectStore("productos");
-        const request = store.getAll();
-
-        request.onsuccess = () => {
-            productDatabase = request.result;
-            if (productDatabase && productDatabase.length > 0) {
-                renderDatabaseTable();
-                updateDbStatus();
-            }
-            console.log("Base de datos cargada: ", productDatabase.length, "registros");
-        };
-    } catch (err) {
-        console.error("Error en el inicio:", err);
-    }
-    updatePreview();
-};
-
-        function setTab(tab) {
-            document.getElementById('view-design').classList.toggle('hidden', tab !== 'design');
-            document.getElementById('view-zpl').classList.toggle('hidden', tab !== 'zpl');
-            document.getElementById('view-db').classList.toggle('hidden', tab !== 'db');
-            ['design', 'zpl', 'db'].forEach(t => {
-                const btn = document.getElementById('tab-' + t);
-                btn.className = (t === tab) ? "active" : "";
-            });
-            if(tab === 'zpl') updatePreview();
+        function cambiarVista(modo) {
+            vistaActual = modo;
+            document.getElementById('btnMes').className = modo === 'mes' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-slate-700' : 'flex-1 py-2 rounded-lg text-slate-500 font-bold';
+            document.getElementById('btnTotal').className = modo === 'total' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-slate-700' : 'flex-1 py-2 rounded-lg text-slate-500 font-bold';
+            actualizarDashboard();
         }
 
-        function updateDbStatus() {
-            const status = document.getElementById('db-status');
-            if (productDatabase && productDatabase.length > 0) {
-                status.innerText = `${productDatabase.length} REGISTROS CARGADOS`;
-                status.style.color = "#3b82f6";
+        function actualizarDashboard() {
+            if (fullData.length === 0) return;
+
+            const ahora = new Date();
+            let filtrados = fullData;
+
+            if (vistaActual === 'mes') {
+                filtrados = fullData.filter(i => {
+                    const d = new Date(i.date);
+                    return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
+                });
+            }
+
+            const consumoTotal = filtrados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
+            document.getElementById('txtConsumo').innerText = `$${consumoTotal.toFixed(2)}`;
+
+            const pendientes = fullData.filter(i => i.status === 'pending');
+            document.getElementById('badgeCount').innerText = pendientes.length;
+            renderLista(pendientes);
+        }
+
+        function renderLista(items) {
+            const container = document.getElementById('listaPendientes');
+            container.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.className = "flex items-center justify-between p-4 hover:bg-slate-50 transition cursor-pointer";
+                li.onclick = () => toggleCheck(li, item);
+                li.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="check-circle w-6 h-6 border-2 border-slate-300 rounded-full flex items-center justify-center"></div>
+                        <div>
+                            <p class="font-bold text-sm text-slate-700">${item.desc}</p>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">${item.cat} • ${item.date}</p>
+                        </div>
+                    </div>
+                    <span class="font-black text-slate-600">$${Math.abs(item.amt).toFixed(2)}</span>
+                `;
+                container.appendChild(li);
+            });
+        }
+
+        function toggleCheck(el, item) {
+            const circle = el.querySelector('.check-circle');
+            const index = seleccionados.findIndex(i => i.id === item.id);
+            
+            if (index > -1) {
+                seleccionados.splice(index, 1);
+                circle.innerHTML = '';
+                circle.classList.remove('bg-green-500', 'border-green-500');
+                el.classList.remove('bg-green-50');
             } else {
-                status.innerText = "Sin base de datos";
-                status.style.color = "#64748b";
+                seleccionados.push(item);
+                circle.innerHTML = '✓';
+                circle.classList.add('bg-green-500', 'border-green-500', 'text-white');
+                el.classList.add('bg-green-50');
             }
-        }
-
-        function renderDatabaseTable() {
-            const tbody = document.getElementById('db-preview-body');
-            tbody.innerHTML = '';
-            if (!productDatabase || productDatabase.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:40px;">Sin datos cargados</td></tr>';
-                return;
-            }
-            productDatabase.slice(0, 100).forEach((p) => {
-                const tr = document.createElement('tr');
-                tr.onclick = () => selectProduct(p);
-                tr.innerHTML = `<td><b>${p.sku}</b></td><td>${p.articulo}</td><td style="text-align:center">${p.umedida}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function selectProduct(p) {
-            document.getElementById('prod-sku').value = p.sku;
-            document.getElementById('prod-name').value = p.articulo;
-            document.getElementById('prod-um').value = p.umedida;
-            updatePreview();
-            setTab('design');
-        }
-
-async function clearDatabase() {
-    if(confirm("¿Borrar base de datos pesada?")) {
-        const db = await openDB();
-        const tx = db.transaction(storeName, "readwrite");
-        tx.objectStore(storeName).clear();
-        
-        tx.oncomplete = () => {
-            productDatabase = [];
-            renderDatabaseTable();
-            updateDbStatus();
-            alert("Base de datos eliminada.");
-        };
-    }
-}
-
-function importCSV(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const text = e.target.result;
-            const lines = text.split(/\r?\n/);
-            let tempDb = [];
-
-            lines.forEach((line) => {
-                if (!line.trim()) return;
-                const parts = line.split(';');
-                if (parts.length >= 2) {
-                    tempDb.push({ 
-                        sku: parts[0].trim().toUpperCase(), 
-                        articulo: parts[1].trim().toUpperCase(), 
-                        umedida: (parts[2] || 'PZA').trim().toUpperCase() 
-                    });
-                }
-            });
-
-            if (tempDb.length > 0) {
-                // GUARDAR EN INDEXEDDB
-                const tx = db.transaction("productos", "readwrite");
-                const store = tx.objectStore("productos");
-                
-                store.clear(); // Limpia lo anterior
-                tempDb.forEach(item => store.put(item));
-
-                tx.oncomplete = () => {
-                    productDatabase = tempDb;
-                    renderDatabaseTable();
-                    updateDbStatus();
-                    setTab('design');
-                    alert("¡Guardado exitosamente en el navegador!");
-                };
-                
-                tx.onerror = () => alert("Error al escribir en el disco del navegador.");
-            }
-        } catch (err) {
-            alert("Error procesando el archivo.");
-            console.error(err);
-        }
-    };
-    reader.readAsText(file, 'windows-1252');
-}
-
-        function handleSkuSearch() {
-            const inputSku = document.getElementById('prod-sku').value.trim().toUpperCase();
-            const product = productDatabase.find(p => p.sku.toUpperCase() === inputSku);
-            if (product) {
-                document.getElementById('prod-name').value = product.articulo;
-                document.getElementById('prod-um').value = product.umedida;
-            }
-            updatePreview();
-        }
-
-        function getZPL() {
-            const name = document.getElementById('prod-name').value.toUpperCase();
-            const sku = document.getElementById('prod-sku').value.toUpperCase();
-            const um = document.getElementById('prod-um').value.toUpperCase();
-            const qty = document.getElementById('prod-qty').value;
-            const copies = document.getElementById('prod-copies').value || 1;
-            const size = document.getElementById('label-size').value;
-            const useEscape = document.getElementById('use-escape').checked;
-
-            let barcodeData = sku ,extirarG = 7 ,extirarP = 6,extirar21=4,cantidad ='';
-            if (useEscape) barcodeData = `${sku}_0d${qty}`,extirarG = 4,extirarP = 3,extirar21=3,cantidad = qty;
-
-            if (size === "90x60") {
-                const fontSize = name.length < 20 ? 70 : 45;
-                return `^XA^PW719^LL480^CI28^LH0,0
-^CF0,${fontSize},${fontSize}^FO50,50^FB620,3,10,L,0^FD${name}^FS
-^CF0,40,40^FO50,230^FDCantidad: ^FS
-^CF0,110,110^FO220,205^FD${qty}^FS
-^CF0,35,25^FO470,205^FDUNIDAD DE MEDIDA:^FS
-^CF0,70,70^FO470,240^FD${um}^FS
-^BY${extirarP},2,100^FO50,330^BCN,125,N,N,N,A^FH^FD${barcodeData}^FS
-^CF0,35,25^FO470,330^FDSKU:^FS
-^CF0,110,75^FO470,365^FD${sku}^FS
-^PQ${copies},0,1,Y^XZ`;
-            }
-
-            if (size === "105x85") {
-                const fontSize = name.length < 20 ? 70 : 45;
-                return `^XA^PW839^LL680^CI28^LH0,0
-^CF0,${fontSize},${fontSize}^FO50,50^FB740,3,10,L,0^FD${name}^FS
-^CF0,35,25^FO50,250^FDCantidad: ^FS
-^CF0,200,200^FO165,250^FD${qty}^FS
-^CF0,35,25^FO570,250^FDUNIDAD DE MEDIDA:^FS
-^CF0,70,70^FO570,320^FD${um}^FS
-^BY${extirarG},2,100^FO50,450^BCN,185,N,N,N,A^FH^FD${barcodeData}^FS
-^CF0,35,25^FO570,450^FDSKU:^FS
-^CF0,190,75^FO570,490^FD${sku}^FS
-^PQ${copies},0,1,Y^XZ`;
-            }
-
-            if (size === "105x25") {
-                const colWidth = 400; 
-                const gap = 24;
-                const totalEtiquetas = parseInt(copies) || 1;
-                let zplCompleto = `^XA^PW840^LL200^CI28^LH0,0`;
-
-                // Definimos la estructura de una columna individual
-                const generarColumna = (offsetX) => `
-            ^FO${offsetX},16^FB${colWidth-20},2,0,C,0^A0N,25,25^FD${name.substring(0,50)}^FS
-            ^BY${extirar21},2,80^FO${offsetX+24},70^BCN,80,N,N,N,A^FH^FD${barcodeData}^FS
-            ^FO${offsetX+50},160^FB${colWidth-20},1,0,C,0^A0N,40,40^FD${cantidad}^FS
-            ^FO${offsetX+115},160^FB${colWidth-20},1,0,C,0^A0N,40,40^FD${um}^FS
-            ^FO${offsetX+1},160,0^FB${colWidth-150},1,0,C,0^A0N,40,30^FD${sku}^FS`;
-
-                // Iteramos de 2 en 2 para crear las filas necesarias
-                for (let i = 0; i < totalEtiquetas; i += 2) {
-                    // Añadir columna izquierda (siempre existe en este paso)
-                    zplCompleto += generarColumna(0);
-                    
-                    // Añadir línea divisoria central
-                    zplCompleto += `^FO408,0,0^GB24,200,24^FS`;
-
-                    // Añadir columna derecha SOLO si aún queda una etiqueta por imprimir
-                    if (i + 1 < totalEtiquetas) {
-                        zplCompleto += generarColumna(colWidth + gap);
-                    }
-
-                    // Si no es la última fila de etiquetas, cerramos esta etiqueta y empezamos otra
-                    // (Zebra interpreta cada ^XZ como el final de una etiqueta física)
-                    if (i + 2 < totalEtiquetas) {
-                        zplCompleto += `^XZ^XA^PW840^LL200^CI28^LH0,0`;
-                    }
-                }
-
-                zplCompleto += `^PQ1,0,1,Y^XZ`; // PQ1 porque el bucle ya generó las cantidades
-                return zplCompleto;
-            }
-
-            if (size === "101x13") {
-                const colWidth = 250; const gap = 24;
-                const zplCols = (offsetX) => `
-^BY2,2,50^FO${offsetX+15},15^BCN,50,N,N,N,A^FH^FD${barcodeData}^FS
-^FO${offsetX},70^FB${colWidth},1,0,C,0^A0N,18,18^FD${sku}^FS`;
-                return `^XA^PW807^LL104^CI28^LH0,0
-${zplCols(0)}
-${zplCols(colWidth + gap)}
-${zplCols((colWidth + gap) * 2)}
-^PQ${copies},0,1,Y^XZ`;
-            }
-        }
-
-function updatePreview() {
-    const size = document.getElementById('label-size').value;
-    const container = document.getElementById('label-container');
-    const name = document.getElementById('prod-name').value;
-    const sku = document.getElementById('prod-sku').value;
-    const qty = document.getElementById('prod-qty').value;
-    const um = document.getElementById('prod-um').value;
-    
-    container.className = `ratio-${size.replace('x','-')}`;
-    container.innerHTML = ''; // Limpiar para redibujar
-
-    if (size === "105x25") {
-        // DISEÑO PARA 2 COLUMNAS (105x25)
-        container.style.display = "grid";
-        container.style.gridTemplateColumns = "1fr 20px 1fr";
-        container.style.padding = "10px";
-        
-        const columnHtml = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; overflow: hidden;">
-                <div style="font-size: 12px; font-weight: 900; text-align: center; width: 100%; white-space: nowrap;">${name.substring(0,25)}</div>
-                <div class="barcode-sim" style="height: 50px; margin: 5px 0;"></div>
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-end;">
-                    <span style="font-family: monospace; font-size: 14px; font-weight: bold;">${sku}</span>
-                    <span style="font-size: 18px; font-weight: 900;">${qty} ${um}</span>
-                </div>
-            </div>
-        `;
-        
-        container.innerHTML = `
-            ${columnHtml}
-            <div style="background: #000; width: 100%; height: 100%;"></div> ${columnHtml}
-        `;
-    } else {
-        // DISEÑO PARA BANNER (90x60 o 105x85)
-        container.style.display = "flex";
-        container.style.flexDirection = "column";
-        container.style.justifyContent = "space-between";
-        container.style.padding = "10px";
-        
-        container.innerHTML = `
-            <h3 style="font-size: 1.5rem; font-weight: 800; text-transform: uppercase; line-height: 1;">${name}</h3>
-            <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <span style="font-size: 18px; font-weight: 900;">Cantidad:</span>
-                    <span style="font-size: 55px; font-weight: 900; line-height: 1;">${qty}</span>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 12px; font-weight: 900;">UNIDAD DE MEDIDA:</div>
-                    <div style="font-size: 35px; font-weight: 900;">${um}</div>
-                </div>
-            </div>
-            <div style="display: flex; align-items: flex-end; gap: 20px;">
-                <div style="flex: 1;"><div class="barcode-sim" style="height: 60px;"></div></div>
-                <div style="text-align: right; min-width: 120px;">
-                    <div style="font-size: 14px; font-weight: 900;">SKU:</div>
-                    <div style="font-size: 45px; font-weight: 900;">${sku}</div>
-                </div>
-            </div>
-        `;
-    }
-    
-    document.getElementById('zpl-output').innerText = getZPL();
-}
-
-        function exportZPL() {
-            const zpl = getZPL();
-            const blob = new Blob([zpl], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${document.getElementById('prod-sku').value || 'etiqueta'}.zpl`;
-            a.click();
-        }
-
-async function printZebra() {
-    const method = document.getElementById('conn-method').value;
-    
-    if (method === 'ip') {
-        await printZebraIP();
-    } else if (method === 'usb') {
-        await printZebraUSB();
-    } else {
-        await printWebSerial();
-    }
-}
-
-
-
-        async function printZebraIP() {
-            const ip = document.getElementById('printer-ip').value;
-            const zpl = getZPL();
-            const btn = document.getElementById('print-btn');
-            const msg = document.getElementById('message');
-            const badge = document.getElementById('status-badge');
-
-            localStorage.setItem('zebra_ip', ip);
-            btn.disabled = true;
-            msg.innerText = "ENVIANDO...";
-            msg.style.color = "#f59e0b";
-            msg.classList.remove('hidden');
             
-            try {
-                await fetch(`http://${ip}/pstprnt`, { method: 'POST', body: zpl, mode: 'no-cors' });
-                msg.innerText = "¡ENVIADO!";
-                msg.style.color = "#22c55e";
-                badge.innerText = "CONECTADO";
-                badge.className = "badge badge-green";
-            } catch (err) {
-                msg.innerText = "ERROR DE RED";
-                msg.style.color = "#ef4444";
-            } finally {
-                setTimeout(() => { btn.disabled = false; }, 2000);
-            }
+            const subtotal = seleccionados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
+            document.getElementById('txtSubtotal').innerText = `$${subtotal.toFixed(2)}`;
         }
 
-async function printZebraUSB() {
-    const zpl = getZPL(); // Reutiliza tu función generadora de ZPL
-    const btn = document.getElementById('print-btn');
-    const msg = document.getElementById('message');
-
-    try {
-        // 1. Buscamos la impresora Zebra conectada por USB
-        const response = await fetch("http://localhost:9101/default");
-        const device = await response.json();
-
-        if (device && device.uid) {
-            // 2. Enviamos el ZPL a la impresora encontrada
-            await fetch("http://localhost:9101/write", {
-                method: "POST",
-                body: JSON.stringify({
-                    device: { uid: device.uid },
-                    data: zpl
-                })
-            });
+        function compartirWhatsApp() {
+            if (seleccionados.length === 0) return alert("Selecciona pagos primero");
             
-            msg.innerText = "¡IMPRESO POR USB!";
-            msg.style.color = "#22c55e";
-        } else {
-            throw new Error("No se detectó impresora USB");
+            let mensaje = "✨ *Resumen de Gastos Compartidos* ✨\n━━━━━━━━━━━━━━━━━━\n\n";
+            
+            seleccionados.forEach(item => {
+                let emoji = item.cat.split('_')[0] || '💸'; // Usa el emoji de la categoría si existe
+                const desc = item.desc.toLowerCase();
+                
+                for (let key in emojiMap) {
+                    if (desc.includes(key)) { emoji = emojiMap[key]; break; }
+                }
+                
+                // Si la descripción tiene nombres de personas conocidos
+                if (desc.includes('ruth') || desc.includes('karla')) emoji = '👤';
+
+                mensaje += `${emoji} *${item.desc.trim()}*: $${Math.abs(item.amt).toFixed(2)}\n`;
+            });
+
+            const total = seleccionados.reduce((acc, i) => acc + Math.abs(i.amt), 0);
+            mensaje += `\n━━━━━━━━━━━━━━━━━━\n💰 *SUBTOTAL: $${total.toFixed(2)}*\n\n💬 _¿Confirmamos estos pagos?_`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
-    } catch (err) {
-        console.error(err);
-        msg.innerText = "ERROR: ASEGÚRESE QUE BROWSER PRINT ESTÉ ABIERTO";
-        msg.style.color = "#ef4444";
-        msg.classList.remove('hidden');
-    }
-}
-
-async function printWebSerial() {
-    const zpl = getZPL();
-    
-    try {
-        // El navegador pedirá permiso al usuario para elegir el puerto
-        const port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 }); // Ajustar según configuración de la Zebra
-
-        const writer = port.writable.getWriter();
-        const encoder = new TextEncoder();
-        
-        await writer.write(encoder.encode(zpl));
-        
-        await writer.releaseLock();
-        await port.close();
-        
-        document.getElementById('message').innerText = "ENVIADO POR SERIAL USB";
-    } catch (err) {
-        alert("Error al conectar con el puerto: " + err);
-    }
-}
-
-
     </script>
 </body>
 </html>
